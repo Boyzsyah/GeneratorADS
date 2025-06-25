@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
     // 2. If you are deploying to a custom domain root (e.g., your-username.github.io or www.yourdomain.com)
     //    AND that domain points directly to this repository's GitHub Pages,
     //    then base should be '/'.
-    const base = mode === 'production' ? '/YOUR_REPOSITORY_NAME/' : '/';
+    const base = mode === 'production' ? '/GeneratorADS/' : '/';
 
     return {
       base: base,
