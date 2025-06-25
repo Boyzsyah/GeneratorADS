@@ -1,53 +1,45 @@
-# GitHub Actions workflow for building and deploying to GitHub Pages
+---
 name: Deploy to GitHub Pages
-
 on:
   push:
-    branches: ["main"] # !!! GANTI KE "master" JIKA ITU BRANCH UTAMA ANDA !!!
-  workflow_dispatch:
-
+    branches:
+      - main
+  workflow_dispatch: null
 permissions:
   contents: read
   pages: write
   id-token: write
-
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: false
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
-          cache: 'npm'
-
+          node-version: 20.x
+          cache: npm
       - name: Install dependencies
         run: npm ci
-
       - name: Build application
         run: npm run build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-
       - name: Setup Pages
-        id: pages # ID ini penting untuk referensi output
+        id: pages
         uses: actions/configure-pages@v5
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
-
+          path: ./dist
       - name: Echo GitHub Pages URL
-        run: echo "Deployment URL: ${{ steps.pages.outputs.base_url }}${{ steps.pages.outputs.base_path }}"
-
+        run: >
+          echo "Deployment URL is: ${{ steps.pages.outputs.base_url }}${{
+          steps.pages.outputs.base_path }}"
   deploy:
     environment:
       name: github-pages
