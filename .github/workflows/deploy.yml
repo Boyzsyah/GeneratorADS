@@ -4,7 +4,7 @@ name: Deploy to GitHub Pages
 on:
   # Runs on pushes targeting the default branch (usually main or master)
   push:
-    branches: ["main"] # Pastikan ini branch default Anda, misal "master" atau "main"
+    branches: ["main"] # Pastikan ini adalah branch default Anda, misal "master" atau "main"
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
