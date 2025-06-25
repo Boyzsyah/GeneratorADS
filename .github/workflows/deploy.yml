@@ -2,9 +2,15 @@
 name: Deploy to GitHub Pages
 
 on:
+<<<<<<< HEAD
   # Runs on pushes targeting the 'master' branch (sesuai push terakhir Anda)
   push:
     branches: ["master"] # Ganti ke "main" jika Anda beralih ke branch 'main'
+=======
+  # Runs on pushes targeting the default branch (usually main or master)
+  push:
+    branches: ["main"] # Ganti dengan nama branch utama Anda jika bukan 'main'
+>>>>>>> 49d16cb8002a6cbf9cba6fdb88fe9e9df30b2805
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -34,7 +40,11 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
+<<<<<<< HEAD
           node-version: '18' # Sesuai dengan package.json Anda
+=======
+          node-version: '18' # Atau versi Node.js yang sesuai dengan proyek Anda
+>>>>>>> 49d16cb8002a6cbf9cba6fdb88fe9e9df30b2805
           cache: 'npm'
 
       - name: Install dependencies
@@ -45,8 +55,12 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           # Pastikan VITE_BASE_URL (jika Anda menggunakannya di vite.config.js untuk base)
+<<<<<<< HEAD
           # diatur dengan benar di sini atau langsung di vite.config.js.
           # Dalam kasus kita, base sudah diatur di vite.config.ts
+=======
+          # diatur dengan benar di sini atau langsung di vite.config.js
+>>>>>>> 49d16cb8002a6cbf9cba6fdb88fe9e9df30b2805
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -59,4 +73,8 @@ jobs:
 
       - name: Deploy to GitHub Pages
         id: deployment
+<<<<<<< HEAD
         uses: actions/deploy-pages@v4
+=======
+        uses: actions/deploy-pages@v4
+>>>>>>> 49d16cb8002a6cbf9cba6fdb88fe9e9df30b2805
