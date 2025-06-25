@@ -1,136 +1,62 @@
+# GitHub Actions workflow for building and deploying to GitHub Pages
+name: Deploy to GitHub Pages
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Ad Concept Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --theme-color-primary: #4f46e5; /* Indigo-600 */
-            --theme-color-accent: #10b981; /* Emerald-500 for success/accent */
-        }
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f1f5f9; /* Slate-100 */
-            color: #334155; /* Slate-700 */
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #e2e8f0; border-radius: 10px;}
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 10px;}
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #64748b; }
-        
-        .max-h-dynamic-show {
-            max-height: 5000px; /* Increased for potentially very long content */
-        }
-        
-        /* === Standard CSS for Form Inputs === */
-        .form-input, .form-textarea, .form-select {
-            display: block;
-            width: 100%;
-            padding: 0.75rem 1rem; /* py-3 px-4 */
-            background-color: #ffffff;
-            border: 1px solid #cbd5e1; /* slate-300 */
-            border-radius: 0.5rem; /* rounded-lg */
-            font-size: 0.875rem; /* text-sm */
-            line-height: 1.6; /* Adjusted for better readability */
-            color: #1e293b; /* slate-800 */
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
-        }
+on:
+  # Runs on pushes targeting the 'master' branch (sesuai push terakhir Anda)
+  push:
+    branches: ["master"] # Ganti ke "main" jika Anda beralih ke branch 'main'
 
-        .form-input::placeholder, .form-textarea::placeholder {
-            color: #94a3b8; /* slate-400 */
-            opacity: 1; /* Firefox fix */
-        }
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
-        .form-input:hover, .form-textarea:hover, .form-select:hover {
-            border-color: #94a3b8; /* slate-400 */
-        }
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-        .form-input:focus, .form-textarea:focus, .form-select:focus {
-            outline: none;
-            border-color: #4f46e5; /* indigo-500 */
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3); /* focus:ring-2 focus:ring-indigo-500 with adjusted alpha */
-        }
-        
-        .form-textarea {
-            min-height: 100px; 
-        }
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
-        .form-select {
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 0.75rem center; /* Adjusted for padding */
-            background-repeat: no-repeat;
-            background-size: 1.25em 1.25em; 
-            padding-right: 2.5rem; /* pr-10, ensure space for arrow */
-        }
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-        /* Styles for disabled form elements */
-        .form-input:disabled, 
-        .form-textarea:disabled, 
-        .form-select:disabled {
-            background-color: #f1f5f9; /* slate-100 */
-            border-color: #e2e8f0; /* slate-200 */
-            color: #64748b; /* slate-500 */
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .form-input:disabled::placeholder, 
-        .form-textarea:disabled::placeholder {
-            color: #9ca3af; /* slate-400 with a bit more opacity or a lighter shade */
-        }
-        /* === End Standard CSS for Form Inputs === */
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18' # Sesuai dengan package.json Anda
+          cache: 'npm'
 
-        .main-card {
-            background-color: #ffffff;
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
-            border-width: 1px;
-            border-color: #e2e8f0; /* slate-200 */
-            overflow: hidden;
-        }
-        
-        .smooth-transition {
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 300ms; /* Standardized duration */
-        }
+      - name: Install dependencies
+        run: npm install
 
-    </style>
-<link rel="stylesheet" href="/index.css">
-<script type="importmap">
-{
-  "imports": {
-    "react": "https://esm.sh/react@^19.1.0",
-    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react/": "https://esm.sh/react@^19.1.0/",
-    "path": "https://esm.sh/path@^0.12.7",
-    "vite": "https://esm.sh/vite@^7.0.0",
-    "url": "https://esm.sh/url@^0.11.4",
-    "@google/genai": "https://esm.sh/@google/genai@^1.6.0"
-  }
-}
-</script>
-</head>
-<body class="antialiased">
-    <div id="root">
-        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; color: #334155; text-align: center; padding: 20px;">
-            Memuat Aplikasi AI Ad Concept Generator... Pastikan JavaScript diaktifkan dan API Key telah dikonfigurasi dengan benar jika ada masalah.
-        </div>
-    </div>
-    <noscript>
-        <div style="display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; color: #334155; text-align: center; padding: 20px;">
-            Aplikasi ini membutuhkan JavaScript untuk berjalan. Silakan aktifkan JavaScript di browser Anda.
-        </div>
-    </noscript>
-    <script type="module" src="/index.tsx"></script>
-</body>
-</html>
+      - name: Build application
+        run: npm run build
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # Pastikan VITE_BASE_URL (jika Anda menggunakannya di vite.config.js untuk base)
+          # diatur dengan benar di sini atau langsung di vite.config.js.
+          # Dalam kasus kita, base sudah diatur di vite.config.ts
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload dist folder
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
