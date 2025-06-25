@@ -39,7 +39,7 @@ jobs:
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # Menggunakan secret untuk API key
       - name: Setup Pages
-        id: pages # ID ditambahkan di sini
+        id: pages # ID PENTING untuk mereferensikan outputs
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
@@ -48,7 +48,6 @@ jobs:
           path: './dist'
       - name: Echo GitHub Pages URL # Tambahan untuk menampilkan URL
         run: echo "Deployment URL: ${{ steps.pages.outputs.base_url }}${{ steps.pages.outputs.base_path }}"
-
 
   # Deployment job
   deploy:
